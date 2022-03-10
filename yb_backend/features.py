@@ -8,8 +8,8 @@ class DatabaseFeatures(PGDatabaseFeatures):
 
     allows_group_by_lob = False
     supports_deferrable_unique_constraints = False
-    uses_savepoints = False
-    can_release_savepoints = False
+    uses_savepoints = True
+    can_release_savepoints = True
 
     # With YB, transactions may start generating conflicts if one transaction does
     # "select for update". While in Postgres, the transactions wait. To overcome
