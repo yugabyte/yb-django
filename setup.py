@@ -3,7 +3,6 @@ from setuptools import find_packages, setup
 import os
 import sys
 from distutils.sysconfig import get_python_lib
-import django
 
 from setuptools import setup
 
@@ -38,9 +37,7 @@ an older version of Django:
 classifiers = """\
 Development Status :: 2 - Pre-Alpha
 Environment :: Web Environment
-Framework :: Django Backend for Yugabyte
 Intended Audience :: Developers
-License :: OSI Approved :: Apache License
 Operating System :: OS Independent
 Programming Language :: Python :: 3.8
 Programming Language :: Python :: 3.9
@@ -51,14 +48,14 @@ Topic :: Software Development :: Libraries :: Application Frameworks
 Topic :: Software Development :: Libraries :: Python Modules
 """
 try:
-    f = open("README.md")
+    f = open("README.rst")
     readme = f.read()
     f.close()
 except Exception:
     print("failed to read readme: ignoring...")
     readme = __doc__
 setup(name="yb-django",
-version = django.__version__,
+version = "3.1.6",
 url = 'https://www.yugabyte.com/',
 author = 'Yugabyte',
 author_email = 'hbhanawat@yugabyte.com',
