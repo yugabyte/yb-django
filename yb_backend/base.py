@@ -50,9 +50,9 @@ class DatabaseWrapper(PGDatabaseWrapper):
     ops_class = DatabaseOperations
     client_class = DatabaseClient
 
-    def savepoint(self):
+   # def savepoint(self):
         # We override savepoint function to overcome the issue mentioned here
         # https://code.djangoproject.com/ticket/28263
         # https://code.djangoproject.com/ticket/32527
         # https://github.com/yugabyte/yugabyte-db/issues/7760
-        return 1
+        #return 1
