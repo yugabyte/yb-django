@@ -55,7 +55,7 @@ except Exception:
     print("failed to read readme: ignoring...")
     readme = __doc__
 setup(name="yb-django",
-version = "3.1.7-yb-1",
+version = "3.1.6.post0",
 url = 'https://www.yugabyte.com/',
 author = 'Yugabyte',
 author_email = 'hbhanawat@yugabyte.com',
