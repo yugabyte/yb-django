@@ -38,7 +38,7 @@ Check if it is installed correctly:
 Use the backend with your Application
 -------------------------------------
 
-Update the ``DATABASES`` setting in in your Django project's settings to point to YB server using Django YB backend:
+Update the ``DATABASES`` setting in your Django project's settings to point to YB server using Django YB backend:
 
 .. code-block:: python
 
