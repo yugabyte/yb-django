@@ -1,13 +1,13 @@
 DATABASES = {
     'default': {
-        'ENGINE': 'yb_backend',
+        'ENGINE': 'django_yugabytedb',
         'NAME': 'yugabyte',
         'HOST': 'localhost',
         'PORT': 5433,
         'USER': 'yugabyte'
     },
     'other': {
-        'ENGINE': 'yb_backend',
+        'ENGINE': 'django_yugabytedb',
         'NAME': 'yugabyte',
         'HOST': 'localhost',
         'PORT': 5433,

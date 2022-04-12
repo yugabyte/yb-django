@@ -6,6 +6,8 @@ Prerequisites
 
 * GCC
 * Python 3.8 and above 
+* Psycopg2-binary
+* Django 3.16 or above
 
 Need for Django Backend for YugabyteDB
 ---------------------------------------
@@ -44,10 +46,17 @@ Update the ``DATABASES`` setting in your Django project's settings to point to Y
 
     DATABASES = {
         'default': {
-            'ENGINE': 'yb_backend',
+            'ENGINE': 'django_yugabytedb',
             'NAME': 'yugabyte',
             'HOST': 'localhost',
             'PORT': 5433,
             'USER': 'yugabyte'
         }
     }
+
+Known bugs and issues
+-----------------------
+
+* The creation of indexes in YugabyteDB is a little slow.
+* Since Inet is mapped to varchar in the backend, comparison between data in the inet column wth Inet type will fail.
+* For YugabyteDB verions earlier than 2.9, the savepoint feature is not supported.
