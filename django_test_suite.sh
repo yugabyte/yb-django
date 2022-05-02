@@ -37,7 +37,7 @@ DATABASES = {
    },
    'other': {
        'ENGINE': 'django_yugabytedb',                                                                            
-       'NAME': 'yugabyte',                                                                                
+       'NAME': 'other',                                                                                
        'HOST': 'localhost',                                                                               
        'PORT': 5437,                                                                                      
        'USER': 'yugabyte' 
