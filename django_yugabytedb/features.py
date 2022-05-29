@@ -104,7 +104,7 @@ class DatabaseFeatures(PGDatabaseFeatures):
             
             'migrations.test_operations.OperationTests.test_alter_fk_non_fk',
         })
-        print ('version:',_ver)
+
         if float(_ver[0:3]) > 3.2 :
             expected_failures.update({
 
