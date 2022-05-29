@@ -2,8 +2,13 @@ from django.db.backends.postgresql.features import (
     DatabaseFeatures as PGDatabaseFeatures,
 )
 from django.utils.functional import cached_property
+from django import __version__ as _ver
 
 class DatabaseFeatures(PGDatabaseFeatures):
+
+    # YugabyteDB uses Postgres version 11.2. So changing the minimum database version to support versions 11 or later
+    minimum_database_version = (10,)
+
     # Refer https://github.com/yugabyte/yugabyte-db/issues/7764
 
     allows_group_by_lob = False
@@ -57,13 +62,12 @@ class DatabaseFeatures(PGDatabaseFeatures):
             'schema.tests.SchemaTests.test_alter_not_unique_field_to_primary_key',
             'schema.tests.SchemaTests.test_primary_key',
 
-            # Lack of Pessimistic Locking support which will need app to retry the transaction.
-            'migrations.test_operations.OperationTests.test_run_sql',
-
             # Alter table Add column Unique is not yet supported. 
             # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/1124
-            'schema.tests.SchemaTests.test_add_field_o2o_nullable',
             'schema.tests.SchemaTests.test_indexes',
+
+            # Lack of Pessimistic Locking support which will need app to retry the transaction.
+            'migrations.test_operations.OperationTests.test_run_sql',
 
             # Yugabyte does not allow changing column type from integer to bigint. 
             # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/7762
@@ -99,7 +103,29 @@ class DatabaseFeatures(PGDatabaseFeatures):
             'schema.tests.SchemaTests.test_func_index_json_key_transform_cast',
             
             'migrations.test_operations.OperationTests.test_alter_fk_non_fk',
-            
+        })
+        print ('version:',_ver)
+        if float(_ver[0:3]) > 3.2 :
+            expected_failures.update({
+
+            # Alter table Add column Unique is not yet supported. 
+            # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/1124
+            'schema.tests.SchemaTests.test_add_field_o2o_nullable',
+
+            # ALTER INDEX not supported yet
+            # GH Issue: https://github.com/YugaByte/yugabyte-db/issues/1130
+            'migrations.test_operations.OperationTests.test_rename_index',
+            'migrations.test_operations.OperationTests.test_rename_index_unnamed_index',
+
+              })
+
+        if float(_ver[0:3]) <= 3.2 :
+            expected_failures.update({
+
+            # YB does not allow changing the column type from integer to serial
+            'schema.tests.SchemaTests.test_alter_int_pk_to_autofield_pk',
+            # YB does not allow changing the column type from serial to integer
+            'schema.tests.SchemaTests.test_alter_auto_field_to_integer_field',
 
               })
         return expected_failures
