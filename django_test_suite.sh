@@ -17,13 +17,13 @@ mkdir -p $DJANGO_TESTS_DIR
 
 pip3 install -r requirements.txt
 pip3 install -e .
-git clone https://github.com/django/django.git $DJANGO_TESTS_DIR/django
+git clone https://github.com/django/django.git --branch $DJANGO_BRANCH $DJANGO_TESTS_DIR/django-$DJANGO_VERSION
 
 # Install dependencies for Django tests.
 sudo apt-get update
 sudo apt-get install -y libffi-dev libjpeg-dev zlib1g-devel
 
-cd $DJANGO_TESTS_DIR/django && pip3 install -e . && pip3 install -r tests/requirements/py3.txt; cd ../../
+cd $DJANGO_TESTS_DIR/django-$DJANGO_VERSION && pip3 install -e . && pip3 install -r tests/requirements/py3.txt; cd ../../
 
 create_settings() {
     cat << ! > "test_yugabyte.py"
@@ -32,14 +32,14 @@ DATABASES = {
        'ENGINE': 'django_yugabytedb',                                                                          
        'NAME': 'yugabyte',                                                                              
        'HOST': 'localhost',                                                                             
-       'PORT': 5437,                                                                                    
+       'PORT': $PORT,                                                                                    
        'USER': 'yugabyte'
    },
    'other': {
        'ENGINE': 'django_yugabytedb',                                                                            
        'NAME': 'other',                                                                                
        'HOST': 'localhost',                                                                               
-       'PORT': 5437,                                                                                      
+       'PORT': $PORT,                                                                                      
        'USER': 'yugabyte' 
    },
 }
@@ -53,7 +53,7 @@ USE_TZ = False
 !
 }
 
-cd $DJANGO_TESTS_DIR/django/tests
+cd $DJANGO_TESTS_DIR/django-$DJANGO_VERSION/tests
 create_settings
 
 EXIT_STATUS=0

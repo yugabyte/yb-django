@@ -5,7 +5,7 @@ on:
     branches:
       - main
   pull_request:
-name: django-3.2-tests
+name: django-4.0-tests
 jobs:
   system-tests:
     runs-on: ubuntu-latest
@@ -20,18 +20,18 @@ jobs:
           python-version: 3.8
 
       - name: Start YugabyteDB on docker
-        run: docker run -d --name yugabyte1 -p5435:5433 yugabytedb/yugabyte:2.12.3.0-b19 bin/yugabyted start --daemon=false --tserver_flags='enable_pg_savepoints=true'
+        run: docker run -d --name yugabyte2 -p5431:5433 yugabytedb/yugabyte:2.12.3.0-b19 bin/yugabyted start --daemon=false --tserver_flags='enable_pg_savepoints=true'
 
-      - name: Run Django 3.2 tests 
+      - name: Run Django 4.0 tests 
         run: sh django_test_suite.sh
         env: 
-          DJANGO_VERSION: 3.2
-          DJANGO_BRANCH: stable/3.2.x
-          PORT: 5435
+          DJANGO_VERSION: 4.0
+          DJANGO_BRANCH: stable/4.0.x
+          PORT: 5431
           DJANGO_TEST_APPS: absolute_url_overrides admin_autodiscover admin_checks admin_default_site admin_registration admin_scripts app_loading apps async bash_completion builtin_server cache check_framework conditional_processing constraints context_processors csrf_tests custom_lookups custom_methods datatypes db_typecasts db_utils dbshell.test_postgresql decorators deprecation dispatch empty empty_models field_deconstruction field_defaults field_subclassing file_storage files fixtures_model_package from_db_value handlers httpwrappers humanize_tests i18n invalid_models_tests logging_tests m2o_recursive mail max_lengths messages_tests middleware middleware_exceptions migrate_signals migrations migration_test_data_persistence migrations2 model_enums model_indexes model_meta model_utils no_models or_lookups pagination project_template properties requests reserved_names resolve_url responses save_delete_hooks schema servers sessions_tests settings_tests shell shortcuts signed_cookies_tests signing sitemaps_tests sites_tests staticfiles_tests str template_backends template_loader test_client test_client_regress test_exceptions test_runner transaction_hooks transactions urlpatterns urlpatterns_reverse user_commands utils_tests validators version wsgi
       
       - name: Stop YugabyteDB on docker
-        run: docker stop yugabyte1
+        run: docker stop yugabyte2
 
       - name: Remove YugabyteDB on docker
-        run: docker rm yugabyte1
+        run: docker rm yugabyte2

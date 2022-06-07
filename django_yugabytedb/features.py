@@ -105,7 +105,7 @@ class DatabaseFeatures(PGDatabaseFeatures):
             'migrations.test_operations.OperationTests.test_alter_fk_non_fk',
         })
 
-        if float(_ver[0:3]) > 3.2 :
+        if float(_ver[0:3]) > 4.0 :
             expected_failures.update({
 
             # Alter table Add column Unique is not yet supported. 
@@ -119,7 +119,7 @@ class DatabaseFeatures(PGDatabaseFeatures):
 
               })
 
-        if float(_ver[0:3]) <= 3.2 :
+        if float(_ver[0:3]) <= 4.0 :
             expected_failures.update({
 
             # YB does not allow changing the column type from integer to serial
