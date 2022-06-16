@@ -35,8 +35,11 @@ an older version of Django:
     sys.exit(1)
 
 classifiers = """\
-Development Status :: 2 - Pre-Alpha
+Development Status :: 5 - Production/Stable
 Environment :: Web Environment
+Framework :: Django
+Framework :: Django :: 3.2
+Framework :: Django :: 4.0
 Intended Audience :: Developers
 Operating System :: OS Independent
 Programming Language :: Python :: 3.8
@@ -55,7 +58,7 @@ except Exception:
     print("failed to read readme: ignoring...")
     readme = __doc__
 setup(name="django-yugabytedb",
-version = "3.1.6.post0",
+version = "4.0.0.post0",
 url = 'https://www.yugabyte.com/',
 author = 'Yugabyte',
 author_email = 'hbhanawat@yugabyte.com',
