@@ -6,16 +6,17 @@ Prerequisites
 
 * GCC
 * Python 3.8 and above 
-* Psycopg2-binary
+* Psycopg2-yugabytedb (recommended)
 * Django 3.2 or above
 
 Need for Django Backend for YugabyteDB
 ---------------------------------------
 
-YugabyteDB needs a separate backend for Django. This is because of mainly 2 reasons.
+YugabyteDB needs a separate backend for Django. This is because of mainly 3 reasons.
 
 * Django tries to create Inet data types as primary keys in Django test suites. Since this is not supported, we map Inet types to varchar(15) and varchar(39) in the YB backend.  
 * We also need it to support type change from int to BigInt and numeric(m,n) to double precision. This is required  for Django DB migrations. For now, the YB backend ignores these type changes.
+* The Django PostgreSQL Backend does not support the Load Balance, even when used with YugabyteDB smart driver. 
   
 Installing from Pypi
 ---------------------
@@ -59,7 +60,38 @@ Update the ``DATABASES`` setting in your Django project's settings to point to Y
             'NAME': 'yugabyte',
             'HOST': 'localhost',
             'PORT': 5433,
-            'USER': 'yugabyte'
+            'USER': 'yugabyte',
+        }
+    }
+
+To use Cluster Aware Load Balance:
+
+.. code-block:: python
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django_yugabytedb',
+            'NAME': 'yugabyte',
+            'HOST': 'localhost',
+            'PORT': 5433,
+            'USER': 'yugabyte',
+            'LOAD_BALANCE': 'True'
+        }
+    }
+
+To use Topology Aware Load Balance:
+
+.. code-block:: python
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django_yugabytedb',
+            'NAME': 'yugabyte',
+            'HOST': 'localhost',
+            'PORT': 5433,
+            'USER': 'yugabyte',
+            'LOAD_BALANCE': 'True',
+            'TOPOLOGY_KEYS': 'cloud1.region1.zone1'
         }
     }
 

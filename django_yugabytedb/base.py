@@ -56,3 +56,16 @@ class DatabaseWrapper(PGDatabaseWrapper):
         # https://code.djangoproject.com/ticket/32527
         # https://github.com/yugabyte/yugabyte-db/issues/7760
         #return 1
+
+    def get_connection_params(self):
+        conn_params =  super().get_connection_params()
+        settings_dict = self.settings_dict
+        load_balance = settings_dict.get("LOAD_BALANCE")
+        topology_keys = settings_dict.get("TOPOLOGY_KEYS")
+        if load_balance:
+            conn_params["load_balance"] = load_balance
+        if topology_keys:
+            conn_params["topology_keys"] = topology_keys
+        
+        return conn_params
+
