@@ -58,7 +58,6 @@ class DatabaseFeatures(PGDatabaseFeatures):
 
             # Dropping a primary key constraint is not yet supported
             # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/8735
-            'schema.tests.SchemaTests.test_alter_int_pk_to_int_unique',
             'schema.tests.SchemaTests.test_alter_not_unique_field_to_primary_key',
             'schema.tests.SchemaTests.test_primary_key',
 
@@ -112,10 +111,9 @@ class DatabaseFeatures(PGDatabaseFeatures):
             # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/1124
             'schema.tests.SchemaTests.test_add_field_o2o_nullable',
 
-            # ALTER INDEX not supported yet
-            # GH Issue: https://github.com/YugaByte/yugabyte-db/issues/1130
-            'migrations.test_operations.OperationTests.test_rename_index',
-            'migrations.test_operations.OperationTests.test_rename_index_unnamed_index',
+            # ALTER TABLE name ADD [COLUMN] [IF NOT EXISTS] colname integer GENERATED ALWAYS AS IDENTITY [PRIMARY KEY] is not supported. 
+            # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/1124
+            'schema.tests.SchemaTests.test_add_auto_field',
 
               })
 
@@ -128,4 +126,12 @@ class DatabaseFeatures(PGDatabaseFeatures):
             'schema.tests.SchemaTests.test_alter_auto_field_to_integer_field',
 
               })
+
+        if float(_ver[0:3]) >= 4.2:
+            expected_failures.update({
+                # Backfilling of existing rows when new column is added with default value is not yet implemented in yugabytedb. 
+                # The test inserts data and then tries to add columns with default value. 
+                # GH Issue : https://github.com/yugabyte/yugabyte-db/issues/4415
+                'schema.tests.SchemaTests.test_add_db_comment_and_default_charfield',
+            })
         return expected_failures
