@@ -22,7 +22,7 @@ jobs:
           python-version: 3.8
 
       - name: Start YugabyteDB on docker
-        run: docker run -d --name yugabyte1 -p5435:5433 yugabytedb/yugabyte:2.12.3.0-b19 bin/yugabyted start --daemon=false --tserver_flags='enable_pg_savepoints=true'
+        run: docker run -d --name yugabyte1 -p5435:5433 yugabytedb/yugabyte:latest bin/yugabyted start --daemon=false --tserver_flags='enable_pg_savepoints=true'
 
       - name: Run Django 3.2 tests 
         run: sh django_test_suite.sh
