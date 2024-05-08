@@ -42,19 +42,11 @@ class DatabaseFeatures(PGDatabaseFeatures):
     def django_test_expected_failures(self):
         expected_failures = super().django_test_expected_failures
         expected_failures.update({
-            # Backfilling of existing rows when new column is added with default value is not yet implemented in yugabytedb. 
-            # The test inserts data and then tries to add columns with default value. 
-            # GH Issue : https://github.com/yugabyte/yugabyte-db/issues/4415
-            'migrations.test_operations.OperationTests.test_add_binaryfield',
-            'migrations.test_operations.OperationTests.test_add_charfield',
-            'migrations.test_operations.OperationTests.test_add_textfield',
-            'migrations.test_operations.OperationTests.test_alter_order_with_respect_to',
+            # Deferrable constraints not honoured in child table deferred UPDATE scenario. 
+            # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/9288
             'migrations.test_operations.OperationTests.test_add_field_m2m',
             'migrations.test_operations.OperationTests.test_create_model_m2m',
-            'schema.tests.SchemaTests.test_add_datefield_and_datetimefield_use_effective_default',
-            'schema.tests.SchemaTests.test_add_field_default_dropped',
-            'schema.tests.SchemaTests.test_add_field_default_transform',
-            'schema.tests.SchemaTests.test_add_field_use_effective_default',
+
 
             # Dropping a primary key constraint is not yet supported
             # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/8735
@@ -127,11 +119,4 @@ class DatabaseFeatures(PGDatabaseFeatures):
 
               })
 
-        if float(_ver[0:3]) >= 4.2:
-            expected_failures.update({
-                # Backfilling of existing rows when new column is added with default value is not yet implemented in yugabytedb. 
-                # The test inserts data and then tries to add columns with default value. 
-                # GH Issue : https://github.com/yugabyte/yugabyte-db/issues/4415
-                'schema.tests.SchemaTests.test_add_db_comment_and_default_charfield',
-            })
         return expected_failures
