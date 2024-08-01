@@ -102,8 +102,6 @@ class DatabaseFeatures(PGDatabaseFeatures):
 
         yb_version = os.getenv('YB_VERSION')
 
-        print('Version:', yb_version)
-
         if yb_version[0:4] == '2024':
             expected_failures.update({
                 # Alter table Add column Unique is not yet supported. 
