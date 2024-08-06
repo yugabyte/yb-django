@@ -3,6 +3,7 @@ from django.db.backends.postgresql.features import (
 )
 from django.utils.functional import cached_property
 from django import __version__ as _ver
+import os
 
 class DatabaseFeatures(PGDatabaseFeatures):
 
@@ -40,22 +41,12 @@ class DatabaseFeatures(PGDatabaseFeatures):
 
     @cached_property
     def django_test_expected_failures(self):
-        expected_failures = super().django_test_expected_failures
-        expected_failures.update({
+        base_expected_failures = super().django_test_expected_failures
+        base_expected_failures.update({
             # Deferrable constraints not honoured in child table deferred UPDATE scenario. 
             # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/9288
             'migrations.test_operations.OperationTests.test_add_field_m2m',
             'migrations.test_operations.OperationTests.test_create_model_m2m',
-
-
-            # Dropping a primary key constraint is not yet supported
-            # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/8735
-            'schema.tests.SchemaTests.test_alter_not_unique_field_to_primary_key',
-            'schema.tests.SchemaTests.test_primary_key',
-
-            # Alter table Add column Unique is not yet supported. 
-            # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/1124
-            'schema.tests.SchemaTests.test_indexes',
 
             # Lack of Pessimistic Locking support which will need app to retry the transaction.
             'migrations.test_operations.OperationTests.test_run_sql',
@@ -96,21 +87,9 @@ class DatabaseFeatures(PGDatabaseFeatures):
             'migrations.test_operations.OperationTests.test_alter_fk_non_fk',
         })
 
-        if float(_ver[0:3]) > 4.0 :
-            expected_failures.update({
-
-            # Alter table Add column Unique is not yet supported. 
-            # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/1124
-            'schema.tests.SchemaTests.test_add_field_o2o_nullable',
-
-            # ALTER TABLE name ADD [COLUMN] [IF NOT EXISTS] colname integer GENERATED ALWAYS AS IDENTITY [PRIMARY KEY] is not supported. 
-            # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/1124
-            'schema.tests.SchemaTests.test_add_auto_field',
-
-              })
 
         if float(_ver[0:3]) <= 4.0 :
-            expected_failures.update({
+            base_expected_failures.update({
 
             # YB does not allow changing the column type from integer to serial
             'schema.tests.SchemaTests.test_alter_int_pk_to_autofield_pk',
@@ -118,5 +97,31 @@ class DatabaseFeatures(PGDatabaseFeatures):
             'schema.tests.SchemaTests.test_alter_auto_field_to_integer_field',
 
               })
+            
+        expected_failures = base_expected_failures 
+
+        yb_version = os.getenv('YB_VERSION')
+
+        if yb_version[0:4] == '2024':
+            expected_failures.update({
+                # Alter table Add column Unique is not yet supported. 
+                # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/1124
+                'schema.tests.SchemaTests.test_add_field_o2o_nullable',
+
+                # ALTER TABLE name ADD [COLUMN] [IF NOT EXISTS] colname integer GENERATED ALWAYS AS IDENTITY [PRIMARY KEY] is not supported. 
+                # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/1124
+                'schema.tests.SchemaTests.test_add_auto_field',
+
+                # Dropping a primary key constraint is not yet supported
+                # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/8735
+                'schema.tests.SchemaTests.test_alter_not_unique_field_to_primary_key',
+                'schema.tests.SchemaTests.test_primary_key',
+                
+                # Alter table Add column Unique is not yet supported. 
+                # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/1124
+                'schema.tests.SchemaTests.test_indexes',
+
+            })
+
 
         return expected_failures
