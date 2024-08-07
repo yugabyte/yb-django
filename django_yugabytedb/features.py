@@ -101,8 +101,10 @@ class DatabaseFeatures(PGDatabaseFeatures):
         expected_failures = base_expected_failures 
 
         yb_version = os.getenv('YB_VERSION')
+        yb_version_major = yb_version.split('.')[0]
+        yb_version_minor = yb_version.split('.')[1]
 
-        if yb_version[0:4] == '2024':
+        if (yb_version_major == '2024' and yb_version_minor == '1') or float(yb_version[0:4]) < 2.23:
             expected_failures.update({
                 # Alter table Add column Unique is not yet supported. 
                 # GH Issue: https://github.com/yugabyte/yugabyte-db/issues/1124
