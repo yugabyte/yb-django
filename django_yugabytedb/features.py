@@ -104,6 +104,29 @@ class DatabaseFeatures(PGDatabaseFeatures):
         yb_version_major = yb_version.split('.')[0]
         yb_version_minor = yb_version.split('.')[1]
 
+        if float(yb_version[0:4]) <= 2.18:
+            expected_failures.update({
+                # Backfilling of existing rows when new column is added with default value is not yet implemented in yugabytedb. 
+                # The test inserts data and then tries to add columns with default value. 
+                # GH Issue : https://github.com/yugabyte/yugabyte-db/issues/4415
+                'migrations.test_operations.OperationTests.test_add_binaryfield',
+                'migrations.test_operations.OperationTests.test_add_charfield',
+                'migrations.test_operations.OperationTests.test_add_textfield',
+                'migrations.test_operations.OperationTests.test_alter_order_with_respect_to',
+                'schema.tests.SchemaTests.test_add_datefield_and_datetimefield_use_effective_default',
+                'schema.tests.SchemaTests.test_add_field_default_dropped',
+                'schema.tests.SchemaTests.test_add_field_default_transform',
+                'schema.tests.SchemaTests.test_add_field_use_effective_default',
+            })
+
+            if float(_ver[0:3]) >= 4.2:
+                expected_failures.update({
+                # Backfilling of existing rows when new column is added with default value is not yet implemented in yugabytedb. 
+                # The test inserts data and then tries to add columns with default value. 
+                # GH Issue : https://github.com/yugabyte/yugabyte-db/issues/4415
+                'schema.tests.SchemaTests.test_add_db_comment_and_default_charfield',
+            })
+
         if (yb_version_major == '2024' and yb_version_minor == '1') or float(yb_version[0:4]) < 2.23:
             expected_failures.update({
                 # Alter table Add column Unique is not yet supported. 
