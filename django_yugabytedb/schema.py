@@ -8,12 +8,9 @@ logger = logging.getLogger('yb_backend.schema')
 class DatabaseSchemaEditor(PGDatabaseSchemaEditor):
     def _alter_field(self, model, old_field, new_field, old_type, new_type,
                      old_db_params, new_db_params, strict=False):
-        
-        print("Version:", self.connection.yugabytedb_version)
 
         if self.connection.yugabytedb_version <= (2,18):
             
-            print("Skipping alter table command for this version")
             # Refer https://github.com/yugabyte/yugabyte-db/issues/7762
             if old_type != new_type:
                 # Increasing the size of varchar is supported

@@ -27,7 +27,6 @@ from .features import DatabaseFeatures  # NOQA
 from .introspection import DatabaseIntrospection  # NOQA
 from .operations import DatabaseOperations  # NOQA
 from .schema import DatabaseSchemaEditor  # NOQA
-from django.db import connection
 
 
 from django.db.backends.postgresql.base import (
