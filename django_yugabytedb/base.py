@@ -1,5 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.version import get_version_tuple
+from django.utils.functional import cached_property
 
 
 try:
@@ -26,6 +27,7 @@ from .features import DatabaseFeatures  # NOQA
 from .introspection import DatabaseIntrospection  # NOQA
 from .operations import DatabaseOperations  # NOQA
 from .schema import DatabaseSchemaEditor  # NOQA
+from django.db import connection
 
 
 from django.db.backends.postgresql.base import (
@@ -49,6 +51,19 @@ class DatabaseWrapper(PGDatabaseWrapper):
     introspection_class = DatabaseIntrospection
     ops_class = DatabaseOperations
     client_class = DatabaseClient
+
+    @cached_property
+    def yugabytedb_version(self):
+        with self.temporary_connection() as cur:
+            cur.execute("Select * from version()")
+            row = cur.fetchone()
+            version_part = row[0].split('-YB-')[1].split('-')[0]  # "2.20.7.0"
+            version_tuple = tuple(map(int, version_part.split('.')[:2]))  # (2, 20)
+            return version_tuple
+    
+    def get_database_version(self):
+        return self.yugabytedb_version
+       
 
    # def savepoint(self):
         # We override savepoint function to overcome the issue mentioned here
