@@ -7,7 +7,7 @@ import os
 
 class DatabaseFeatures(PGDatabaseFeatures):
 
-    # YugabyteDB uses Postgres version 11.2. So changing the minimum database version to support versions 11 or later
+    # Minimum version of yugabytedb
     minimum_database_version = (2,14)
 
     # Refer https://github.com/yugabyte/yugabyte-db/issues/7764
