@@ -31,7 +31,7 @@ class DatabaseFeatures(PGDatabaseFeatures):
     can_rollback_ddl = False
     indexes_foreign_keys = True
     can_clone_databases = False
-    supports_ignore_conflicts = False
+    supports_ignore_conflicts = True
     supports_covering_indexes = True
 
     supports_collation_on_charfield = False
